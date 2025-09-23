@@ -118,7 +118,6 @@ namespace Pong_project
                 _ballXSpeed = -_ballXSpeed;
             }
 
-        }
 
             base.Update(gameTime);
         }
