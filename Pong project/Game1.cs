@@ -24,18 +24,22 @@ namespace Pong_project
         private int _paddleSpeed = 10;
         private int _ballXSpeed = 5;
         private int _ballYSpeed = 5;
-        private string _player1StringScore = "0";
-        private string _player2StringScore = "0";
+        private string _player1StringScore = "Score: 0";
+        private string _player2StringScore = "Score: 0";
+        private string _winString = "";
         private Rectangle _player1Collision = new Rectangle();
         private Rectangle _player2Collision = new Rectangle();
         private Rectangle _ballCollision = new Rectangle();
         private Vector2 _player1ScoreVector = new Vector2();
         private Vector2 _player2ScoreVector = new Vector2();
+        private Vector2 _winStringVector = new Vector2();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = 800;
             _graphics.PreferredBackBufferHeight = 600;
+            _winStringVector.X = _graphics.PreferredBackBufferWidth/2 - 100;
+            _winStringVector.Y = _graphics.PreferredBackBufferHeight/2 + 40;
             _player1X = 50;
             _player1Y = _graphics.PreferredBackBufferHeight / 2 - 70;
             _player1ScoreVector.X = 40;
@@ -70,6 +74,22 @@ namespace Pong_project
 
         protected override void Update(GameTime gameTime)
         {
+            //check player win condition (10pts)
+            if (_player1Score == 10)
+            {
+                //player 1 win - stop ball + display message
+                _ballXSpeed = 0;
+                _ballYSpeed = 0;
+                _winString = "Player 1 has won";
+            }
+            if (_player2Score == 10)
+            {
+                //player 2 win - stop ball + display message
+                _ballXSpeed = 0;
+                _ballYSpeed = 0;
+                _winString = "Player 2 has won";
+            }
+
             Rectangle _player1Collision = new Rectangle(_player1X, _player1Y, 40, 140);
             Rectangle _player2Collision = new Rectangle(_player2X, _player2Y, 40, 140);
             Rectangle _ballCollision = new Rectangle(_ballX, _ballY, 40, 40);
@@ -142,24 +162,19 @@ namespace Pong_project
             //check score +1 condition
             if (_ballX < 0)
             {
-                _player1Score += 1;
-                _player1StringScore = _player1Score.ToString();
+                _player2Score += 1;
+                _player2StringScore = "Score: " + _player2Score.ToString();
                 _ballX = _graphics.PreferredBackBufferWidth / 2 - 20;
                 _ballY = _graphics.PreferredBackBufferHeight / 2 - 20;
             }
             if (_ballX > _graphics.PreferredBackBufferWidth)
             {
-                _player2Score += 1;
-                _player2StringScore = _player2Score.ToString();
+                _player1Score += 1;
+                _player1StringScore = "Score: " + _player1Score.ToString();
                 _ballX = _graphics.PreferredBackBufferWidth / 2 - 20;
                 _ballY = _graphics.PreferredBackBufferHeight / 2 - 20;
             }
 
-            //check player win condition (10pts)
-            if (_player2Score == 10)
-            {
-                //nothing here
-            }
 
             base.Update(gameTime);
         }
@@ -175,6 +190,7 @@ namespace Pong_project
             _spriteBatch.Draw(_ball, new Rectangle(_ballX, _ballY, _ball.Width, _ball.Height), Color.White);
             _spriteBatch.DrawString(_font, _player1StringScore, _player1ScoreVector, Color.White);
             _spriteBatch.DrawString(_font, _player2StringScore, _player2ScoreVector, Color.White);
+            _spriteBatch.DrawString(_font, _winString, _winStringVector, Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
